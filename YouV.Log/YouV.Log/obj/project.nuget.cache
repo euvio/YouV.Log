@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "NWM2DIdE0Zr7AY3ZjSzVLMyiGNqBvzE4o2aNg5n/V9Q2tQA2Ss/amZhSVg/85azxkqrRm0A9z0JPr6ClSzsfgw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Administrator\\Documents\\GitHub\\YouV.Log\\YouV.Log\\YouV.Log\\YouV.Log.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Administrator\\.nuget\\packages\\nlog\\4.7.15\\nlog.4.7.15.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,14 @@
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\bin\Release\net6.0\NLog.config
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\bin\Release\net6.0\日志模块使用说明文档.md
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\bin\Release\net6.0\YouV.Log.deps.json
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\bin\Release\net6.0\YouV.Log.dll
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\bin\Release\net6.0\YouV.Log.pdb
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.csproj.AssemblyReference.cache
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.AssemblyInfoInputs.cache
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.AssemblyInfo.cs
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.dll
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\refint\YouV.Log.dll
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\YouV.Log.pdb
+C:\Users\Administrator\Documents\GitHub\YouV.Log\YouV.Log\YouV.Log\obj\Release\net6.0\ref\YouV.Log.dll
