@@ -66,7 +66,8 @@ Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", null, LogLev
 
 YouV.Log定义日志文件名是`appname.app.all.log`，另外，YouV.Log会将Warn，Error，Fatal等级的日志额外的汇总到`appname.app.all.trouble`.log，这有利于当App发生故障时，我们快速查看到故障信息。
 
-![动画](D:\OneDrive\mdimg\动画.gif)
+![动画](https://user-images.githubusercontent.com/67289897/162614486-39472c0d-036c-441c-ae7d-84c9835149b6.gif)
+
 
 如果您在开发中大型的App，可能会产生大量，海量的日志信息。如果不对日志进行合理的分类，可能导致您去查看感兴趣的关键信息如大海捞针般困难。YouV.Log支持对日志进行分类打印，同时也会自动的汇总所有类别日志到app.all.log。这样，如果您的App发生故障，假设我们通过错误弹窗或其他现象得知是A模块发生了故障，那么我们可以直接只看A模块的相关日志，快速定位故障原因。我们仍旧可以通过app.all.log，查看整个App的所有模块按照执行先后打印的交织在一起的日志。
 
@@ -89,7 +90,7 @@ Logger.WriteLog("视觉反馈坐标是{X:1.001,Y:2.652}", "Vision", LogLevel.WAR
 Logger.WriteLog("收到消息[ABS#X#51.075]", "Mqtt", LogLevel.FATAL);
 ```
 
-![16点48分 2022年4月10日](D:\OneDrive\mdimg\16点48分 2022年4月10日.gif)
+![16点48分 2022年4月10日](https://user-images.githubusercontent.com/67289897/162614510-2d632f77-c7dc-47e5-b28c-ee0614893749.gif)
 
 # alsoIntoAll
 
@@ -102,7 +103,7 @@ Logger.WriteLog("I am a msg of moduleA that won't written to all.", "A", alsoInt
 
 `I am a msg of moduleA that will written to all.`和`I am a msg of moduleA that won't written to all.`都会被存储到A.log，但`I am a msg of moduleA that won't written to all.`不会存储在app.all.log.
 
-![17点13分 2022年4月10日](D:\OneDrive\mdimg\17点13分 2022年4月10日.gif)
+![17点13分 2022年4月10日](https://user-images.githubusercontent.com/67289897/162614527-b7c74ab6-6177-4812-836f-d39ac723152e.gif)
 
 适用于某个模块在死循环中一直打印日志，监控线程是否死了，但又不想让监控日志输出到总日志，导致这种无太大意义的监控日志刷走总日志。
 
