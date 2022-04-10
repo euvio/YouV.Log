@@ -1,14 +1,14 @@
 # 简介
 
-YouV.Log是基于NLog二次开发的轻量级，高性能的日志组件，主要特点是可分类打印日志，并能将所有类别的日志汇总到总日志。
+YouV.Log是基于NLog开发的轻量级，高性能的日志组件，主要特点是可分类打印日志，并能将所有类别的日志汇总到总日志。
 
 # 准备
 
-将`NLog`和`NLog.config`拷贝到应用根目录，添加引用: `YouV.Log.dll`，添加命名空间:`YouV.Log`。
+将`NLog`和`NLog.config`拷贝到应用根目录，添加引用: `YouV.Log.dll`，引入命名空间:`YouV.Log`。
 
 # API
 
-YouV.Log仅提供两个API。
+YouV.Log提供两个API。
 
 (1) 打印日志
 
@@ -25,16 +25,14 @@ public static void WriteLog(string message, string? category = null, LogLevel lo
 
 （2）注册日志事件
 
-
 ```csharp
 public static event LogWrittenEventHandler? LogWritten;
 ```
-
+LogWrittenEventHandler类型
 ```csharp
 public delegate void LogWrittenEventHandler(string message, string category, LogLevel logLevel);
 ```
-
-每打印一次日志，便会异步执行一次此事件。
+每打印一次日志，便会异步执行一次此事件。所以，当您想分发日志到其他进程或实时显示日志到UI可注册此事件。
 
 # 使用说明
 
@@ -108,7 +106,7 @@ Logger.WriteLog("I am a msg of moduleA that won't written to all.", "A", alsoInt
 适用于某个模块在死循环中一直打印日志，监控线程是否死了，但又不想让监控日志输出到总日志，导致这种无太大意义的监控日志刷走总日志。
 
 # 性能保证
-
+每次打印日志都需要一个Nlog.Logger实例，密集频繁的实例化会损害程序的性能，YouV.Log缓存Logger实例，每次打印日志都是从缓存中获取Logger，而非即时实例化。同时，采用双检锁机制，保证了第一次往缓存中添加Logger的安全性，又保证了只进入一次锁，提高了程序的性能。
 
 
 
