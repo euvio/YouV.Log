@@ -1,2 +1,277 @@
-# YouV.Log
-基于NLog二次开发的高性能日志组件，适用于轻量级的单机App。
+# 简介
+
+YouV.Log是基于NLog二次开发的轻量级，高性能的日志组件，主要特点是可分类打印日志，并能将所有类别的日志汇总到总日志。
+
+# 准备
+
+将`NLog`和`NLog.config`拷贝到应用根目录，添加引用: `YouV.Log.dll`，添加命名空间:`YouV.Log`。
+
+# API
+
+YouV.Log仅提供两个API。
+
+(1) 打印日志
+
+```csharp
+public static void WriteLog(string message, string? category = null, LogLevel logLevel = LogLevel.INFO, bool alsoIntoAll = true)
+```
+
+| 参数        | 说明                 |
+| ----------- | -------------------- |
+| message     | 日志消息             |
+| category    | 日志类别             |
+| logLevel    | 日志等级             |
+| alsoInfoAll | 日志是否汇总到总日志 |
+
+（2）注册日志事件
+
+
+```csharp
+public static event LogWrittenEventHandler? LogWritten;
+```
+
+```csharp
+public delegate void LogWrittenEventHandler(string message, string category, LogLevel logLevel);
+```
+
+每打印一次日志，便会异步执行一次此事件。
+
+# 使用说明
+
+如果您在开发一个小型的App，可能对日志功能要求并不高，只需要将所有的日志信息输入到同一个文本文件即可，您可以这样：
+
+```csharp
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！");
+```
+
+日志等级默认是INFO，您也可以指定日志等级，YouV.Log提供5种日志等级：`DEBUG`,`INFO`,`WARN`,`ERROR`,`FATAL`.
+
+```csharp
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", logLevel: LogLevel.DEBUG);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", logLevel: LogLevel.INFO);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", logLevel: LogLevel.WARN);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", logLevel: LogLevel.ERROR);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", logLevel: LogLevel.FATAL);
+```
+
+或
+
+```csharp
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", null, LogLevel.DEBUG);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", null, LogLevel.INFO);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", null, LogLevel.WARN);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", null, LogLevel.ERROR);
+Logger.WriteLog("我们是世界第一抗疫大国，赢麻了！", null, LogLevel.FATAL);
+```
+
+YouV.Log定义日志文件名是`appname.app.all.log`，另外，YouV.Log会将Warn，Error，Fatal等级的日志额外的汇总到`appname.app.all.trouble`.log，这有利于当App发生故障时，我们快速查看到故障信息。
+
+![动画](D:\OneDrive\mdimg\动画.gif)
+
+如果您在开发中大型的App，可能会产生大量，海量的日志信息。如果不对日志进行合理的分类，可能导致您去查看感兴趣的关键信息如大海捞针般困难。YouV.Log支持对日志进行分类打印，同时也会自动的汇总所有类别日志到app.all.log。这样，如果您的App发生故障，假设我们通过错误弹窗或其他现象得知是A模块发生了故障，那么我们可以直接只看A模块的相关日志，快速定位故障原因。我们仍旧可以通过app.all.log，查看整个App的所有模块按照执行先后打印的交织在一起的日志。
+
+下面以一个自动化设备上位机App举例：
+
+1. 登录模块 Authority
+
+2. 扫码枪模块 Scanner
+
+3. 视觉模块 Vision
+
+4. 运动模块 Motion
+
+5. 通信模块 Mqtt
+
+```csharp
+Logger.WriteLog("张三已登录", "Authority");
+Logger.WriteLog("打开扫码枪失败!", "Scanner", LogLevel.ERROR);
+Logger.WriteLog("视觉反馈坐标是{X:1.001,Y:2.652}", "Vision", LogLevel.WARN);
+Logger.WriteLog("收到消息[ABS#X#51.075]", "Mqtt", LogLevel.FATAL);
+```
+
+![16点48分 2022年4月10日](D:\OneDrive\mdimg\16点48分 2022年4月10日.gif)
+
+# alsoIntoAll
+
+分模块打印日志，各个模块的日志同时也会自动的被汇总到总日志中。如果您希望某些日志仅仅存储在其模块日志中，不希望或不需要也同时输入到总日志，您可以设置参数alsoIntoAll=false.
+
+```csharp
+Logger.WriteLog("I am a msg of moduleA that will written to all.", "A", alsoIntoAll: false);
+Logger.WriteLog("I am a msg of moduleA that won't written to all.", "A", alsoIntoAll: true);
+```
+
+`I am a msg of moduleA that will written to all.`和`I am a msg of moduleA that won't written to all.`都会被存储到A.log，但`I am a msg of moduleA that won't written to all.`不会存储在app.all.log.
+
+![17点13分 2022年4月10日](D:\OneDrive\mdimg\17点13分 2022年4月10日.gif)
+
+适用于某个模块在死循环中一直打印日志，监控线程是否死了，但又不想让监控日志输出到总日志，导致这种无太大意义的监控日志刷走总日志。
+
+# 性能保证
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 归档错误日志
+
+当机台故障时，每个模块和总日志都会自动把`Warn`,`Error`,`Fatal`级别的日志汇总到一个单独的文档，能够辅助开发人员迅速查看错误详情。
+
+## 可视化实时日志显示
+
+调试程序时，将启动项目的项目类型设置成` Console Application`,程序启动时，命令行会根据日志等级以不同的颜色打印不同级别的系统总日志。
+
+如果我们想将日志实时显示到UI，或分发到其他进程，注册`LogWrited`事件即可。
+
+## 自定义日志存储路径
+
+在配置文件中配置绝对路径或相对路径，便可设置日志在磁盘上的位置。
+
+## 同一模块分层打印日志
+
+以MQTT通信模块开发为例。
+
+接收或发送的原生消息的日志，我们可以归类为`MQTT Raw Msg`，消息解析的日志我们可以归类为`MQTT Command`,这样调试时有问题，我们既可以看原生的一手消息，也可以去看解析层的消息，迅速定位是对方未发送消息，还是我们未处理消息或处理错误。
+
+## 可扩展性
+
+无需改动代码，修改NLog框架本身的配置文件即可。如
+
+a. 发布Release版本，修改配置文件，即可禁止程序打印`Debug`等级的日志。
+
+b. 日志样式
+
+c. 单个日志文件大小
+
+d. 保留最近N个日志文档，删除多余过期的日志文档
+
+e. 发送日志到数据库，错误日志发送邮件到管理员
+
+f. 应用程序可以独立开发，保留日志接口即可套入此日志模块
+
+# 性能保证
+
+1. 在NLog框架的基础上，仅添加if... else...类的代码封装，性能就是框架本身的性能
+2. 使用双检锁机制封装，既避免每次写入日志时频繁的创建`写者`对象的开销，又避免了线程锁竞争开销
+
+# 日志等级
+
+* Debug
+
+* Info
+
+* Warn
+
+* Error
+
+* Fatal
+
+# 使用教程
+
+## 添加引用
+
+添加引用`ShareSharp.Log.dll`,把`NLog.dll`和`NLog.config`拷贝到应用程序根目录。
+
+添加命名空间`ShareSharp.Log`。
+
+## API说明
+
+仅提供两个API:
+
+1. 打印日志
+
+   ```csharp
+   public static void WriteLog(string message, string category = null, LogLevel logLevel = LogLevel.INFO, bool alsoIntoAll = true)
+   ```
+
+2. 日志事件
+
+   ```csharp
+   public delegate void LogWritedEventHandler(string message, string category, LogLevel logLevel);
+   ```
+
+## 基本用法
+
+```c#
+static void Main(string[] args)
+{
+    while (true)
+    {
+        Logger.WriteLog("Wechat", "China", LogLevel.DEBUG);
+        Logger.WriteLog("Wechat", "China", LogLevel.FATAL);
+
+        Logger.WriteLog("Google", "USA", LogLevel.INFO);
+        Logger.WriteLog("Google", "USA", LogLevel.ERROR);
+
+        Logger.WriteLog("Line", "Japanese", LogLevel.FATAL);
+        Logger.WriteLog("Line", "Japanese", LogLevel.WARN);
+
+        Logger.WriteLog("VK", "Russia", LogLevel.FATAL);
+        Logger.WriteLog("VK", "Russia", LogLevel.DEBUG);
+        
+        Thread.Sleep(50);
+    }
+}
+```
+
+## category
+
+如果我们的应用系统很简单，不需要对日志分类，将参数`category`传参为`null`即可，这样我们只会生成一个日志文档`All`。
+
+```csharp
+Logger.WriteLog("Wechat", null, LogLevel.DEBUG);
+```
+
+或
+
+```csharp
+Logger.WriteLog("Wechat", logLevel = LogLevel.DEBUG);
+```
+
+或
+
+```csharp
+Logger.WriteLog("Wechat");
+```
+
+## alsoIntoAll
+
+在应用程序中，经常会在某个模块中写一个死循环，监视PLC的值是否改变，或者相机是否被触发等，这样会在短时间内产生大量几乎完全相同的日志，迅速刷掉系统总日志的有效日志，我们可以通过设置`alsoIntoAll = false`，让其只打印在模块日志中，而不打印在系统总日志中。
+
+`alsoIntoAll = false`，也适用于以下场景：
+
+使用日志API临时汇总一些数据，如视觉每次补偿值，螺丝每次的扭力，点胶参数等，这些数据通常写入一个单独的文件中，用于分析视觉补偿的稳定性，外设的工作稳定性等，并不需要打印到日志中供人查看。
+
+## LogWrited
+
+```csharp
+LogWrited += new LogWritedEventHandler((msg, category, logLevel) => {// 打印到UI，或分发日志到其他进程 });
+```
+
+## 日志打印效果如图
+
+![image-20210927021948294](D:\OneDrive\mdimg\image-20210927021948294.png)
+
+
+
+![image-20210927020811552](D:\OneDrive\mdimg\image-20210927020811552.png)
+
+
+
+![image-20210927020834748](D:\OneDrive\mdimg\image-20210927020834748.png)
+
+![image-20210927020936925](D:\OneDrive\mdimg\image-20210927020936925.png)
+
+![image-20210927020950687](D:\OneDrive\mdimg\image-20210927020950687.png)
+
